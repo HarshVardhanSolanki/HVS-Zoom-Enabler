@@ -1,1 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — YouTube Zoom Enabler by HVS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap');
 
+/* ── Reset & Base ────────────────────────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --mint:    #a9ffd8;
+  --teal:    #50dca0;
+  --cyan:    #7ec8ff;
+  --blue:    #4a8fff;
+  --red:     #ff6b6b;
+  --yellow:  #ffe06a;
+  --bg:      #070810;
+  --bg2:     #0c0f1e;
+  --bg3:     #111426;
+  --surface: rgba(255,255,255,0.04);
+  --border:  rgba(255,255,255,0.07);
+  --text:    rgba(255,255,255,0.88);
+  --muted:   rgba(255,255,255,0.45);
+  --dim:     rgba(255,255,255,0.22);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── Noise texture overlay ───────────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* ── Ambient glow blobs ──────────────────────────────────────────────────── */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  animation: float 12s ease-in-out infinite;
+}
+.blob-1 { width:600px; height:600px; background:rgba(50,220,140,0.09); top:-200px; left:-100px; animation-delay:0s; }
+.blob-2 { width:500px; height:500px; background:rgba(80,140,255,0.08); top:200px; right:-150px; animation-delay:-4s; }
+.blob-3 { width:400px; height:400px; background:rgba(0,190,230,0.06); bottom:100px; left:30%; animation-delay:-8s; }
+
+@keyframes float {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-40px) scale(1.05); }
+}
+
+/* ── Grid lines ──────────────────────────────────────────────────────────── */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(80,220,160,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80,220,160,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layout wrapper ──────────────────────────────────────────────────────── */
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+}
+
+/* ── Top nav bar ─────────────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,8,16,0.82);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+
+.nav-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, rgba(80,220,160,0.2), rgba(80,140,255,0.15));
+  border: 1px solid rgba(80,220,160,0.3);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+
+.nav-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--mint), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px 10px;
+  letter-spacing: 0.06em;
+}
+
+/* ── Hero section ────────────────────────────────────────────────────────── */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(80,220,160,0.08);
+  border: 1px solid rgba(80,220,160,0.2);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 28px;
+}
+
+.hero-chip span {
+  width: 6px; height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--teal);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity:1; } 50% { opacity:0.3; }
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #fff 0%, var(--mint) 50%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto 36px;
+  line-height: 1.65;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--dim);
+  font-family: 'Space Mono', monospace;
+}
+
+.meta-dot { color: var(--teal); }
+
+/* ── Big summary cards ───────────────────────────────────────────────────── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 56px 0 72px;
+}
+
+@media (max-width: 640px) { .summary-grid { grid-template-columns: 1fr; } }
+
+.sum-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.sum-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 16px; right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+
+.sum-card:hover {
+  border-color: rgba(80,220,160,0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(80,220,160,0.12);
+}
+
+.sum-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.sum-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--mint);
+  margin-bottom: 6px;
+}
+
+.sum-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── Table of contents ───────────────────────────────────────────────────── */
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-bottom: 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+.toc::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: linear-gradient(180deg, transparent, var(--teal), var(--cyan), transparent);
+  border-radius: 99px;
+}
+
+.toc-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+.toc-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 24px;
+}
+
+@media (max-width: 520px) { .toc-list { grid-template-columns: 1fr; } }
+
+.toc-list a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  color: var(--muted);
+  transition: color 0.2s, background 0.2s;
+}
+
+.toc-list a:hover { color: var(--mint); background: rgba(80,220,160,0.06); }
+
+.toc-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--teal);
+  min-width: 22px;
+  opacity: 0.7;
+}
+
+/* ── Section wrapper ─────────────────────────────────────────────────────── */
+.section {
+  margin-bottom: 72px;
+  scroll-margin-top: 80px;
+}
+
+/* ── Section header ──────────────────────────────────────────────────────── */
+.sec-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.sec-num {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(80,220,160,0.15), rgba(80,140,255,0.1));
+  border: 1px solid rgba(80,220,160,0.25);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-top: 3px;
+}
+
+.sec-title h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.sec-title p {
+  font-size: 13px;
+  color: var(--dim);
+}
+
+/* ── Body text ───────────────────────────────────────────────────────────── */
+.prose p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.prose p:last-child { margin-bottom: 0; }
+
+/* ── Highlight callout ───────────────────────────────────────────────────── */
+.callout {
+  display: flex;
+  gap: 14px;
+  background: rgba(80,220,160,0.07);
+  border: 1px solid rgba(80,220,160,0.18);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 20px 0;
+}
+
+.callout.blue {
+  background: rgba(80,140,255,0.07);
+  border-color: rgba(80,140,255,0.18);
+}
+
+.callout.red {
+  background: rgba(255,100,100,0.07);
+  border-color: rgba(255,100,100,0.15);
+}
+
+.callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+.callout-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+}
+
+.callout-text strong { color: var(--mint); }
+.callout.blue .callout-text strong { color: var(--cyan); }
+
+/* ── Data table ──────────────────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 20px 0;
+}
+
+.data-table th {
+  background: rgba(80,220,160,0.08);
+  border: 1px solid rgba(80,220,160,0.14);
+  padding: 10px 14px;
+  text-align: left;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.data-table td {
+  border: 1px solid var(--border);
+  padding: 11px 14px;
+  color: rgba(255,255,255,0.72);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.data-table tr:hover td { background: rgba(80,220,160,0.04); }
+
+.badge-no {
+  display: inline-block;
+  background: rgba(255,100,100,0.12);
+  border: 1px solid rgba(255,100,100,0.25);
+  color: #ff8080;
+  border-radius: 99px;
+  padding: 1px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Space Mono', monospace;
+}
+
+.badge-yes {
+  display: inline-block;
+  background: rgba(80,220,160,0.12);
+  border: 1px solid rgba(80,220,160,0.25);
+  color: var(--mint);
+  border-radius: 99px;
+  padding: 1px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Space Mono', monospace;
+}
+
+/* ── Permission cards ────────────────────────────────────────────────────── */
+.perm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0; }
+@media (max-width: 580px) { .perm-grid { grid-template-columns: 1fr; } }
+
+.perm-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+
+.perm-card:hover { border-color: rgba(80,220,160,0.25); }
+
+.perm-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mint);
+  background: rgba(80,220,160,0.1);
+  border: 1px solid rgba(80,220,160,0.2);
+  border-radius: 6px;
+  padding: 3px 10px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.perm-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.perm-not {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--dim);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.perm-not::before { content: '✗'; color: #ff8080; flex-shrink:0; }
+
+/* ── Zero list ───────────────────────────────────────────────────────────── */
+.zero-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+@media (max-width: 540px) { .zero-grid { grid-template-columns: 1fr; } }
+
+.zero-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: border-color 0.2s;
+}
+
+.zero-item:hover { border-color: rgba(80,220,160,0.2); }
+
+.zero-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.zero-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.zero-text span {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── Contact card ────────────────────────────────────────────────────────── */
+.contact-card {
+  background: linear-gradient(135deg, rgba(80,220,160,0.07), rgba(80,140,255,0.06));
+  border: 1px solid rgba(80,220,160,0.18);
+  border-radius: 20px;
+  padding: 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(80,220,160,0.4), transparent);
+}
+
+.contact-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.contact-card p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(80,220,160,0.12);
+  border: 1px solid rgba(80,220,160,0.3);
+  border-radius: 10px;
+  padding: 11px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mint);
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-btn:hover {
+  background: rgba(80,220,160,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(80,220,160,0.15);
+}
+
+/* ── Divider ─────────────────────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 60px 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.footer-inner { max-width: 860px; margin: 0 auto; }
+
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  background: linear-gradient(135deg, var(--mint), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.footer-sub {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 20px;
+  letter-spacing: 0.04em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--mint); }
+
+/* ── Scroll to top ───────────────────────────────────────────────────────── */
+#top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px; height: 44px;
+  background: rgba(7,8,16,0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(80,220,160,0.3);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 200;
+  font-size: 18px;
+  color: var(--mint);
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+#top-btn.show { opacity:1; transform: translateY(0); }
+#top-btn:hover { box-shadow: 0 8px 32px rgba(80,220,160,0.2); border-color: rgba(80,220,160,0.6); }
+
+/* ── Animate on scroll ───────────────────────────────────────────────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity:1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Ambient layers -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grid-bg"></div>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <div class="nav-icon">🔍</div>
+      <span class="nav-name">HVS Zoom</span>
+    </a>
+    <span class="nav-badge">Privacy Policy</span>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══════════════════════════════════════════════════════════════ -->
+<main>
+<div class="wrap">
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <div class="hero fade-in">
+    <div class="hero-chip">
+      <span></span>
+      Last updated · January 2025
+    </div>
+    <h1>Privacy Policy</h1>
+    <p>YouTube Zoom Enabler by HVS is built on a simple principle — your data is yours. We don't want it, we don't collect it, we don't store it anywhere but your own device.</p>
+    <div class="hero-meta">
+      <span class="meta-item"><span class="meta-dot">●</span> Extension v1.4.0</span>
+      <span class="meta-item"><span class="meta-dot">●</span> Chrome Extension</span>
+      <span class="meta-item"><span class="meta-dot">●</span> youtube.com only</span>
+      <span class="meta-item"><span class="meta-dot">●</span> Manifest V3</span>
+    </div>
+  </div>
+
+  <!-- ── SUMMARY CARDS ─────────────────────────────────────────────────── -->
+  <div class="summary-grid fade-in">
+    <div class="sum-card">
+      <span class="sum-icon">🚫</span>
+      <div class="sum-title">Zero Collection</div>
+      <div class="sum-desc">We collect absolutely no personal data, browsing data, or usage statistics of any kind.</div>
+    </div>
+    <div class="sum-card">
+      <span class="sum-icon">📡</span>
+      <div class="sum-title">No Transmission</div>
+      <div class="sum-desc">Nothing ever leaves your browser. No servers receive any information about you or your activity.</div>
+    </div>
+    <div class="sum-card">
+      <span class="sum-icon">🔒</span>
+      <div class="sum-title">Local Only</div>
+      <div class="sum-desc">The only data stored is your zoom preference — in your own browser's local storage, never synced.</div>
+    </div>
+  </div>
+
+  <!-- ── TABLE OF CONTENTS ─────────────────────────────────────────────── -->
+  <div class="toc fade-in">
+    <div class="toc-label">Table of Contents</div>
+    <ul class="toc-list">
+      <li><a href="#overview"><span class="toc-num">01</span>Overview</a></li>
+      <li><a href="#data-collected"><span class="toc-num">02</span>Data We Collect</a></li>
+      <li><a href="#data-not-collected"><span class="toc-num">03</span>Data We Do Not Collect</a></li>
+      <li><a href="#permissions"><span class="toc-num">04</span>Permissions Explained</a></li>
+      <li><a href="#third-party"><span class="toc-num">05</span>Third-Party Services</a></li>
+      <li><a href="#local-storage"><span class="toc-num">06</span>Local Storage</a></li>
+      <li><a href="#children"><span class="toc-num">07</span>Children's Privacy</a></li>
+      <li><a href="#changes"><span class="toc-num">08</span>Policy Changes</a></li>
+      <li><a href="#contact"><span class="toc-num">09</span>Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ── SECTION 1: OVERVIEW ───────────────────────────────────────────── -->
+  <section class="section fade-in" id="overview">
+    <div class="sec-header">
+      <div class="sec-num">01</div>
+      <div class="sec-title">
+        <h2>Overview</h2>
+        <p>Who we are and what this extension does</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p><strong style="color:#fff">YouTube Zoom Enabler</strong> is a Chrome extension developed and maintained by HVS. Its sole purpose is to provide keyboard-driven zoom and mouse-driven pan functionality for the YouTube video player on desktop browsers — bringing mobile-style zoom control to YouTube Watch pages and YouTube Shorts.</p>
+      <p>This Privacy Policy explains in clear, plain language what information the extension accesses, what it stores, what it never touches, and how we handle the minimal local data it does use.</p>
+    </div>
+    <div class="callout">
+      <span class="callout-icon">💡</span>
+      <span class="callout-text"><strong>The short version:</strong> This extension zooms YouTube videos. It does not know who you are, what you watch, or anything else about you. That's it.</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 2: DATA COLLECTED ────────────────────────────────────── -->
+  <section class="section fade-in" id="data-collected">
+    <div class="sec-header">
+      <div class="sec-num">02</div>
+      <div class="sec-title">
+        <h2>Data We Collect</h2>
+        <p>The complete and exhaustive list</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>The extension stores exactly <strong style="color:#fff">one piece of data</strong> on your device:</p>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Value Type</th>
+          <th>Where Stored</th>
+          <th>Purpose</th>
+          <th>Transmitted?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="color:var(--mint);font-family:'Space Mono',monospace;font-size:12px">hvs_zoom</code></td>
+          <td>Float (e.g. <code style="color:var(--cyan);font-family:'Space Mono',monospace;font-size:12px">2.25</code>)</td>
+          <td>chrome.storage.local<br/><span style="color:var(--dim);font-size:12px">Your device only</span></td>
+          <td>Remembers your last zoom level between sessions</td>
+          <td><span class="badge-no">NEVER</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout blue">
+      <span class="callout-icon">🗂️</span>
+      <span class="callout-text">This number lives exclusively in your browser's local extension storage. It is not associated with any user account, device ID, or identity. It is never sent anywhere. It is simply a number between 1.0 and 9.0 that helps you avoid re-setting your zoom preference every time you open YouTube.</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 3: DATA NOT COLLECTED ────────────────────────────────── -->
+  <section class="section fade-in" id="data-not-collected">
+    <div class="sec-header">
+      <div class="sec-num">03</div>
+      <div class="sec-title">
+        <h2>Data We Do Not Collect</h2>
+        <p>Everything the extension deliberately never touches</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>The following data types are never collected, logged, transmitted, inferred, or processed in any form:</p>
+    </div>
+
+    <div class="zero-grid">
+      <div class="zero-item">
+        <span class="zero-icon">👤</span>
+        <div class="zero-text">
+          <strong>Personal Identity</strong>
+          <span>No name, email, age, gender, or Google account information is ever accessed or stored.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">📺</span>
+        <div class="zero-text">
+          <strong>Watch History</strong>
+          <span>The extension never reads, logs, or transmits which videos you watch, for how long, or at what zoom level.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">🌐</span>
+        <div class="zero-text">
+          <strong>Browsing Data</strong>
+          <span>No URLs, page titles, search queries, or navigation history is accessed outside youtube.com.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">📍</span>
+        <div class="zero-text">
+          <strong>Location Data</strong>
+          <span>No IP address, GPS coordinates, timezone inference, or any geolocation data is collected.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">⌨️</span>
+        <div class="zero-text">
+          <strong>Keystrokes</strong>
+          <span>The extension only listens for U and Y keys, and only while not in a text field. It never logs keystrokes.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">🖱️</span>
+        <div class="zero-text">
+          <strong>Mouse Behaviour</strong>
+          <span>Mouse positions are used only for pan calculations in-memory. Nothing is recorded or stored.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">📊</span>
+        <div class="zero-text">
+          <strong>Usage Analytics</strong>
+          <span>No telemetry, crash reports, session counts, feature usage metrics, or any analytics are collected.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">🍪</span>
+        <div class="zero-text">
+          <strong>Cookies & Tokens</strong>
+          <span>The extension does not read, write, modify, or access any cookies, auth tokens, or session data.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 4: PERMISSIONS ────────────────────────────────────────── -->
+  <section class="section fade-in" id="permissions">
+    <div class="sec-header">
+      <div class="sec-num">04</div>
+      <div class="sec-title">
+        <h2>Permissions Explained</h2>
+        <p>Why each permission exists and what it cannot do</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>The extension requests the absolute minimum permissions required to function. Here is an honest, complete explanation of each:</p>
+    </div>
+
+    <div class="perm-grid">
+      <div class="perm-card">
+        <span class="perm-name">activeTab</span>
+        <div class="perm-desc">Allows the extension to inject the zoom engine and HUD overlay into the active YouTube tab. Without this, nothing works.</div>
+        <div class="perm-not">Scoped exclusively to youtube.com. Cannot access any other website, ever.</div>
+      </div>
+      <div class="perm-card">
+        <span class="perm-name">storage</span>
+        <div class="perm-desc">Allows saving your zoom level preference (a single number) in your browser's local storage so it persists between sessions.</div>
+        <div class="perm-not">Only chrome.storage.local is used. Never chrome.storage.sync. Nothing is uploaded to any server.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">🛡️</span>
+      <span class="callout-text"><strong>What is NOT requested:</strong> <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">tabs</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">history</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">cookies</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">webRequest</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">identity</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">geolocation</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">downloads</code>, <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">notifications</code>, or <code style="font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan)">&lt;all_urls&gt;</code>. None of these broader permissions are needed or used.</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 5: THIRD PARTY ─────────────────────────────────────────── -->
+  <section class="section fade-in" id="third-party">
+    <div class="sec-header">
+      <div class="sec-num">05</div>
+      <div class="sec-title">
+        <h2>Third-Party Services</h2>
+        <p>External resources the extension uses</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>The extension contains no third-party tracking scripts, advertising SDKs, analytics libraries, or data broker integrations of any kind. All functional code is self-contained within the installed extension package.</p>
+      <p>The only external resource loaded is a Google Fonts stylesheet used for the HUD overlay typography:</p>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Purpose</th>
+          <th>Data Sent</th>
+          <th>User Data Involved?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Fonts</td>
+          <td>Loads <em>Space Mono</em> and <em>Syne</em> typefaces for the HUD overlay display</td>
+          <td>Standard HTTP font request (browser UA string only)</td>
+          <td><span class="badge-no">NO</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout blue">
+      <span class="callout-icon">ℹ️</span>
+      <span class="callout-text">The Google Fonts request is a standard CSS font load — the same request any website makes when using Google Fonts. It carries no extension-specific data, no user identity, and no YouTube activity information. It can be blocked via browser settings without affecting core zoom functionality.</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 6: LOCAL STORAGE ──────────────────────────────────────── -->
+  <section class="section fade-in" id="local-storage">
+    <div class="sec-header">
+      <div class="sec-num">06</div>
+      <div class="sec-title">
+        <h2>Local Storage</h2>
+        <p>How and where data is stored on your device</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>The extension uses <strong style="color:#fff">chrome.storage.local</strong> — a sandboxed key-value store that is part of Chrome's extension API. This storage is:</p>
+    </div>
+
+    <div class="zero-grid">
+      <div class="zero-item">
+        <span class="zero-icon">💾</span>
+        <div class="zero-text">
+          <strong>Device-local</strong>
+          <span>The data exists only on the device where the extension is installed. It does not sync to other devices.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">🔐</span>
+        <div class="zero-text">
+          <strong>Sandboxed</strong>
+          <span>Only this extension can read or write to its own storage. Other extensions and websites cannot access it.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">🗑️</span>
+        <div class="zero-text">
+          <strong>Clearable by you</strong>
+          <span>You can delete all extension data at any time from Chrome's settings or by uninstalling the extension.</span>
+        </div>
+      </div>
+      <div class="zero-item">
+        <span class="zero-icon">📦</span>
+        <div class="zero-text">
+          <strong>Minimal</strong>
+          <span>Contains one key: <code style="font-family:'Space Mono',monospace;font-size:11px;color:var(--mint)">hvs_zoom</code> — a number. Total data footprint is under 20 bytes.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:20px">
+      <p>To manually clear this data: go to <strong style="color:#fff">chrome://extensions</strong> → find YouTube Zoom Enabler → click Details → Storage → Clear data. Alternatively, uninstalling the extension removes all associated storage automatically.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 7: CHILDREN ───────────────────────────────────────────── -->
+  <section class="section fade-in" id="children">
+    <div class="sec-header">
+      <div class="sec-num">07</div>
+      <div class="sec-title">
+        <h2>Children's Privacy</h2>
+        <p>Our stance on young users</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>YouTube Zoom Enabler does not collect any personal information from any user, of any age. Because the extension collects zero personal data by design, it is inherently safe for users of all ages, including children under 13.</p>
+      <p>The extension does not display advertisements, does not link to external content, does not create accounts, and does not require any form of registration or sign-in. There is no mechanism by which any user — child or adult — could submit personal information to us.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 8: CHANGES ─────────────────────────────────────────────── -->
+  <section class="section fade-in" id="changes">
+    <div class="sec-header">
+      <div class="sec-num">08</div>
+      <div class="sec-title">
+        <h2>Policy Changes</h2>
+        <p>How we handle updates to this policy</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>If this Privacy Policy is updated for any reason, the updated version will be published at this URL and the "Last updated" date at the top of the page will be revised. We will not change our policy in ways that reduce your privacy rights without clearly communicating that change.</p>
+      <p>Given that we collect no personal data, substantive privacy-reducing changes are not anticipated. Any updates are expected to be clarifications, corrections to language, or additions to explain new features that remain equally privacy-preserving.</p>
+    </div>
+    <div class="callout">
+      <span class="callout-icon">📌</span>
+      <span class="callout-text"><strong>Current policy version:</strong> 1.0 — published January 2025 for extension version 1.4.0. The core commitment — zero data collection — will never change.</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── SECTION 9: CONTACT ─────────────────────────────────────────────── -->
+  <section class="section fade-in" id="contact">
+    <div class="sec-header">
+      <div class="sec-num">09</div>
+      <div class="sec-title">
+        <h2>Contact</h2>
+        <p>Questions, concerns, or feedback</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>If you have any questions about this Privacy Policy, concerns about the extension's behaviour, or want to report a potential privacy issue, please reach out. We take privacy questions seriously and will respond promptly.</p>
+    </div>
+
+    <div class="contact-card">
+      <h3>Get in touch with HVS</h3>
+      <p>Privacy questions, bug reports, feature requests — all welcome.</p>
+      <a href="mailto:privacy@hvs.dev" class="contact-btn">
+        ✉️ &nbsp; privacy@hvs.dev
+      </a>
+    </div>
+  </section>
+
+</div><!-- /wrap -->
+</main>
+
+<!-- ═══ FOOTER ═════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">YouTube Zoom Enabler by HVS</div>
+    <div class="footer-sub">Chrome Extension · v1.4.0 · Manifest V3 · youtube.com only</div>
+    <div class="footer-links">
+      <a href="#overview">Privacy Policy</a>
+      <a href="#">Extension Page</a>
+      <a href="#">GitHub</a>
+      <a href="mailto:privacy@hvs.dev">Contact</a>
+    </div>
+    <div style="margin-top:24px;font-size:11px;color:var(--dim)">
+      © 2025 HVS · Built with zero data collection as a core principle
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to top -->
+<a href="#" id="top-btn" title="Back to top">↑</a>
+
+<script>
+// ── Scroll-to-top button
+const topBtn = document.getElementById('top-btn');
+window.addEventListener('scroll', () => {
+  topBtn.classList.toggle('show', window.scrollY > 400);
+});
+
+// ── Fade-in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Stagger children if summary grid
+      e.target.querySelectorAll('.sum-card, .zero-item, .perm-card').forEach((el, i) => {
+        el.style.transitionDelay = `${i * 80}ms`;
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(16px)';
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, i * 80);
+        });
+      });
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
