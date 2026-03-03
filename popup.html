@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Zoom Enabler by HVS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 300px;
+    background: #070810;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    overflow: hidden;
+  }
+
+  .bg-g1 {
+    position: fixed; width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(60,210,140,0.13) 0%, transparent 70%);
+    top: -80px; left: -60px; pointer-events: none;
+  }
+  .bg-g2 {
+    position: fixed; width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(80,130,255,0.09) 0%, transparent 70%);
+    bottom: -30px; right: -50px; pointer-events: none;
+  }
+
+  .wrap { position: relative; z-index: 1; padding: 22px 18px 18px; }
+
+  /* Header */
+  .hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+
+  .hdr-icon {
+    width: 46px; height: 46px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(60,210,140,0.18), rgba(80,130,255,0.14));
+    border: 1px solid rgba(60,210,140,0.25); border-radius: 13px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    box-shadow: 0 0 24px rgba(60,210,140,0.13), 0 2px 0 rgba(255,255,255,0.05) inset;
+  }
+
+  .hdr-text h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13.5px; line-height: 1.2;
+    background: linear-gradient(135deg, #a9ffd8 30%, #7ec8ff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .hdr-text p { font-size: 8.5px; color: rgba(255,255,255,0.25); letter-spacing: 0.13em; text-transform: uppercase; margin-top: 3px; }
+
+  /* Status */
+  .status {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 11px; padding: 9px 13px; margin-bottom: 16px;
+  }
+
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    background: #50dca0; box-shadow: 0 0 8px #50dca0;
+    animation: blink 2.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%,100% { opacity:1; box-shadow: 0 0 8px #50dca0; }
+    50%      { opacity:0.45; box-shadow: 0 0 4px #50dca0; }
+  }
+
+  .status-txt { font-size: 9.5px; color: rgba(255,255,255,0.42); }
+  .status-txt strong { color: #65e8ae; }
+  .status-ver { font-size: 8.5px; color: rgba(255,255,255,0.18); margin-left: auto; }
+
+  /* Label */
+  .lbl { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.22); margin-bottom: 8px; }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 16px; }
+
+  .card {
+    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 13px; padding: 11px 12px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .card:hover { border-color: rgba(80,220,160,0.22); background: rgba(80,220,160,0.05); }
+  .card.full  { grid-column: 1 / -1; }
+  .card.blue:hover { border-color: rgba(90,160,255,0.22); background: rgba(90,160,255,0.05); }
+  .card.green:hover { border-color: rgba(60,210,140,0.22); background: rgba(60,210,140,0.04); }
+
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+  .card-keys { display: flex; gap: 4px; }
+
+  kbd {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.13);
+    border-bottom: 2px solid rgba(0,0,0,0.25); border-radius: 5px;
+    padding: 1px 8px; color: rgba(255,255,255,0.65);
+  }
+  kbd.g { background: rgba(60,210,140,0.12); border-color: rgba(60,210,140,0.25); color: #a9ffd8; }
+  kbd.r { background: rgba(255,90,90,0.12);  border-color: rgba(255,90,90,0.25);  color: #ffaaaa; }
+  kbd.b { background: rgba(80,140,255,0.12); border-color: rgba(80,140,255,0.25); color: #aac8ff; }
+
+  .card-ico { font-size: 17px; opacity: 0.55; }
+  .card-name { font-size: 10px; color: rgba(255,255,255,0.55); letter-spacing: 0.03em; }
+  .card-desc { font-size: 8.5px; color: rgba(255,255,255,0.22); margin-top: 1px; line-height: 1.45; }
+
+  /* Mode badges */
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 16px; }
+
+  .mode-card {
+    border-radius: 12px; padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.065);
+  }
+
+  .mode-card.yt    { background: rgba(255,50,50,0.07);  border-color: rgba(255,80,80,0.18); }
+  .mode-card.short { background: rgba(180,80,255,0.07); border-color: rgba(180,100,255,0.18); }
+
+  .mode-icon { font-size: 16px; margin-bottom: 4px; }
+  .mode-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
+  .mode-range { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; }
+  .mode-card.yt    .mode-range { color: #ff8080; }
+  .mode-card.short .mode-range { color: #d4aaff; }
+  .mode-sub { font-size: 7.5px; color: rgba(255,255,255,0.2); margin-top: 1px; }
+
+  /* Footer */
+  .footer { border-top: 1px solid rgba(255,255,255,0.055); padding-top: 12px; text-align: center; }
+  .footer p { font-size: 8px; color: rgba(255,255,255,0.14); letter-spacing: 0.07em; }
+  .footer strong { color: rgba(80,220,160,0.45); }
+</style>
+</head>
+<body>
+  <div class="bg-g1"></div>
+  <div class="bg-g2"></div>
+  <div class="wrap">
+
+    <div class="hdr">
+      <div class="hdr-icon">🔍</div>
+      <div class="hdr-text">
+        <h1>YouTube Zoom Enabler</h1>
+        <p>by HVS · v1.0</p>
+      </div>
+    </div>
+
+    <div class="status">
+      <div class="dot"></div>
+      <div class="status-txt">Active on <strong>youtube.com</strong></div>
+      <div class="status-ver">v1.0</div>
+    </div>
+
+    <div class="lbl">Zoom Limits by Mode</div>
+    <div class="modes">
+      <div class="mode-card yt">
+        <div class="mode-icon">▶️</div>
+        <div class="mode-name">YouTube</div>
+        <div class="mode-range">1× – 9×</div>
+        <div class="mode-sub">0.25× per step</div>
+      </div>
+      <div class="mode-card short">
+        <div class="mode-icon">📱</div>
+        <div class="mode-name">Shorts</div>
+        <div class="mode-range">1× – 4×</div>
+        <div class="mode-sub">0.25× per step</div>
+      </div>
+    </div>
+
+    <div class="lbl">Controls</div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-keys"><kbd class="g">U</kbd></div>
+          <div class="card-ico">🔼</div>
+        </div>
+        <div class="card-name">Zoom In</div>
+        <div class="card-desc">+0.25× per press</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-keys"><kbd class="r">Y</kbd></div>
+          <div class="card-ico">🔽</div>
+        </div>
+        <div class="card-name">Zoom Out</div>
+        <div class="card-desc">−0.25× per press</div>
+      </div>
+
+      <div class="card full blue">
+        <div class="card-top">
+          <div class="card-keys"><kbd class="b">Ctrl</kbd><span style="color:rgba(255,255,255,0.2);font-size:9px;padding:0 2px">+</span><kbd>Drag</kbd></div>
+          <div class="card-ico">🖱️</div>
+        </div>
+        <div class="card-name">Pan / Move View</div>
+        <div class="card-desc">Hold Ctrl and drag on the video to pan. Without Ctrl, clicks play/pause normally.</div>
+      </div>
+
+      <div class="card full green">
+        <div class="card-top">
+          <div class="card-keys"><kbd>Click</kbd></div>
+          <div class="card-ico">⏯️</div>
+        </div>
+        <div class="card-name">Play / Pause Always Works</div>
+        <div class="card-desc">Clicking the video without Ctrl plays/pauses normally at any zoom level.</div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <p>Zooms only the video · seekbar &amp; controls unaffected · <strong>HVS</strong></p>
+    </div>
+
+  </div>
+</body>
+</html>

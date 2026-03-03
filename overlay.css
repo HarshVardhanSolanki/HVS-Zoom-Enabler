@@ -1,0 +1,213 @@
+/* ── HVS YouTube Zoom — Overlay HUD ─────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+
+#hvs-zoom-hud {
+  position: fixed;
+  top: 84px;
+  right: 20px;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(16px) scale(0.93);
+  transition: opacity 0.28s cubic-bezier(0.34,1.2,0.64,1),
+              transform 0.28s cubic-bezier(0.34,1.2,0.64,1);
+  font-family: 'Space Mono', 'Courier New', monospace;
+}
+
+/* On Shorts, shift HUD inward so it doesn't overlap the side buttons */
+body[data-hvs-shorts] #hvs-zoom-hud,
+.shorts-container #hvs-zoom-hud {
+  top: 100px;
+  right: 80px;
+}
+
+#hvs-zoom-hud.hvs-show {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+#hvs-zoom-hud.hvs-fade {
+  opacity: 0;
+  transform: translateX(10px) scale(0.96);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* Glass card */
+.hvs-glass {
+  background: rgba(6, 8, 18, 0.80);
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  border: 1px solid rgba(255,255,255,0.075);
+  border-radius: 22px;
+  padding: 14px 18px 13px;
+  min-width: 218px;
+  box-shadow:
+    0 0 0 1px rgba(80,220,160,0.10),
+    0 12px 40px rgba(0,0,0,0.72),
+    0 2px 0 rgba(255,255,255,0.05) inset;
+  position: relative;
+  overflow: hidden;
+}
+
+.hvs-glass::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 16px; right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(100,255,180,0.38), transparent);
+}
+
+/* Header */
+.hvs-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.hvs-hex {
+  font-size: 13px;
+  color: #50dca0;
+  animation: hvs-rot 8s linear infinite;
+  display: inline-block;
+  line-height: 1;
+}
+
+@keyframes hvs-rot { to { transform: rotate(360deg); } }
+
+.hvs-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+/* Zoom value row */
+.hvs-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 0 10px;
+}
+
+.hvs-value {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  line-height: 1;
+  color: #a9ffd8;
+  letter-spacing: -0.025em;
+  text-align: center;
+  text-shadow: 0 0 28px rgba(80,220,160,0.45);
+  transition: color 0.35s ease;
+}
+
+/* Arrow indicator buttons */
+.hvs-arrow {
+  width: 28px; height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.25);
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.hvs-arrow svg { width: 14px; height: 14px; }
+
+.hvs-arrow.hvs-pulse {
+  background: rgba(80,220,160,0.18);
+  color: #a9ffd8;
+  box-shadow: 0 0 12px rgba(80,220,160,0.4);
+}
+
+/* Progress bar */
+.hvs-bar-wrap { margin-bottom: 3px; }
+
+.hvs-bar-track {
+  position: relative;
+  height: 5px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.hvs-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #50dca0, #7effd4);
+  transition: width 0.06s linear, background 0.3s ease, box-shadow 0.3s ease;
+  min-width: 4px;
+}
+
+.hvs-bar-mid {
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 1.5px;
+  height: 9px;
+  background: rgba(255,255,255,0.14);
+  border-radius: 99px;
+}
+
+.hvs-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 11px;
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
+
+.hvs-bar-labels span:nth-child(2) {
+  color: rgba(255,255,255,0.4);
+  font-weight: 700;
+}
+
+/* Key chips */
+.hvs-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.055);
+}
+
+.hvs-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.04em;
+}
+
+.hvs-chip kbd {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.4;
+}
+
+/* Pan chip — blue tint */
+.hvs-pan-chip {
+  color: rgba(110,185,255,0.55) !important;
+  margin-left: auto;
+}
+
+.hvs-pan-chip kbd {
+  background: rgba(80,140,255,0.12) !important;
+  border-color: rgba(80,140,255,0.22) !important;
+  color: rgba(140,190,255,0.75) !important;
+}
