@@ -6,7 +6,7 @@
 <!-- ═══════════════════════════════════════════════════════════════ BADGES -->
 <p>
   <img src="https://img.shields.io/badge/Manifest-V3-a9ffd8?style=for-the-badge&logo=googlechrome&logoColor=0a0e1a&labelColor=0a0e1a" alt="Manifest V3"/>
-  <img src="https://img.shields.io/badge/Version-1.4.0-7ec8ff?style=for-the-badge&logo=github&logoColor=0a0e1a&labelColor=0a0e1a" alt="Version"/>
+  <img src="https://img.shields.io/badge/Version-1.0-7ec8ff?style=for-the-badge&logo=github&logoColor=0a0e1a&labelColor=0a0e1a" alt="Version"/>
   <img src="https://img.shields.io/badge/YouTube-Zoom-ff4444?style=for-the-badge&logo=youtube&logoColor=white&labelColor=1a0000" alt="YouTube"/>
   <img src="https://img.shields.io/badge/License-MIT-ffe06a?style=for-the-badge&logoColor=0a0e1a&labelColor=0a0e1a" alt="License"/>
   <img src="https://img.shields.io/badge/PRs-Welcome-50dca0?style=for-the-badge&logoColor=0a0e1a&labelColor=0a0e1a" alt="PRs Welcome"/>
